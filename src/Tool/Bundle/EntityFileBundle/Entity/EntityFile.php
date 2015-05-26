@@ -3,12 +3,17 @@
 namespace Tool\Bundle\EntityFileBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 /**
  * EntityFile
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Tool\Bundle\EntityFileBundle\Entity\EntityFileRepository")
+ *
+ * @Vich\Uploadable
  */
 class EntityFile
 {
@@ -24,28 +29,38 @@ class EntityFile
     /**
      * @var string
      *
-     * @ORM\Column(name="nameFile", type="string", length=255)
+     * @ORM\Column(name="nameFile", type="string", nullable=true,  length=255)
      */
     private $nameFile;
 
     /**
+     * NOTE: This is not a mapped field of entity metadata, just a simple property.
+     *
+     * @Vich\UploadableField(mapping="document_file", fileNameProperty="nameFile")
+     *
+     * @var File $file
+     */
+    private $file;
+
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="shortDescription", type="string", length=255)
+     * @ORM\Column(name="shortDescription", type="string", nullable=true, length=255)
      */
     private $shortDescription;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", nullable=true, type="text")
      */
     private $description;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updateAt", type="datetime")
+     * @ORM\Column(name="updateAt", type="datetime", nullable=true)
      */
     private $updateAt;
 
@@ -53,21 +68,21 @@ class EntityFile
     /**
      * @var boolean
      *
-     * @ORM\Column(name="deleted", type="boolean")
+     * @ORM\Column(name="deleted", type="boolean",  nullable=true)
      */
     private $deleted;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="deletedAt", type="datetime")
+     * @ORM\Column(name="deletedAt", type="datetime",  nullable=true)
      */
     private $deletedAt;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="uploadedFromUser", type="string", length=255)
+     * @ORM\Column(name="uploadedFromUser", type="string", length=255,  nullable=true)
      */
     private $uploadedFromUser;
 
@@ -242,4 +257,33 @@ class EntityFile
     {
         return $this->uploadedFromUser;
     }
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $file
+     */
+    public function setFile(File $file = null){
+        $this->file= $file;
+
+        if ($file) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updateAt = new \DateTime('now');
+        }
+    }
+
+    /**
+     * @return File
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+
 }

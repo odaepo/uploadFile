@@ -25,6 +25,9 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    form:
+        resources:
+            - 'VichUploaderBundle:Form:fields.html.twig'
 
 # Assetic Configuration
 assetic:
@@ -63,7 +66,7 @@ doctrine:
 vich_uploader:
     db_driver: orm
     mappings:
-            product_image:
+            document_file:
                 uri_prefix:         /uploadedFiles
                 upload_destination: %kernel.root_dir%/../web/uploadedFiles
                 namer:              vich_uploader.namer_origname #vich_uploader.namer_uniqid
