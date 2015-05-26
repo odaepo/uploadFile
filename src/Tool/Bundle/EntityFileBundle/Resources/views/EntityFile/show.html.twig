@@ -14,6 +14,34 @@
                 <td>{{ entity.nameFile }}</td>
             </tr>
             <tr>
+                <th>url</th>
+                <td>
+
+                    {#
+
+                    in {{ vich_uploader_asset(entity, 'file') }}
+                    "file" is referred to field $file (to the field you put "@Vich\UploadableField(..." to the annotation!
+
+                    if the file is an image:
+                    {{ vich_uploader_asset(entity, 'image') }}
+
+                    (for the type look also at $builder->add('file', 'vich_file', array( or $builder->add('file', 'vich_image', array(
+                    in EntityType.php)
+
+                    however see: https://github.com/dustin10/VichUploaderBundle/blob/master/Resources/doc/generating_urls.md
+                    and
+
+                    #}
+                    {{ vich_uploader_asset(entity, 'file') }}
+
+
+
+
+                    </td>
+            </tr>
+
+
+            <tr>
                 <th>Shortdescription</th>
                 <td>{{ entity.shortDescription }}</td>
             </tr>
